@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 import { mysqlPool } from "@/utils/db";
 import { ResultSetHeader } from "mysql2";
 
+declare global {
+  var io: any; // Declare the global.io type
+}
+
 export async function POST() {
   try {
     const query = `
