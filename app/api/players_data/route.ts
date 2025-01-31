@@ -65,9 +65,6 @@ export async function POST(req: NextRequest) {
 
     if (io) {
       io.emit("updateData", updatedRows);
-      console.log("Data emitted via WebSocket");
-    } else {
-      console.warn("WebSocket server (global.io) is not initialized.");
     }
 
     return NextResponse.json({ success: true, data: updatedRows });
