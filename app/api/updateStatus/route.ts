@@ -12,7 +12,7 @@ export async function POST() {
 
     console.log("Executing query:", query);
 
-    const [result] = await mysqlPool.promise().query<ResultSetHeader>(query);
+    const [result] = await (mysqlPool.promise().query(query) as Promise<[ResultSetHeader]>);
 
     console.log("Affected Rows:", result.affectedRows);
 

@@ -4,7 +4,6 @@ const { Server } = require('socket.io');
 const next = require('next');
 const cron = require('node-cron');
 const fetch = require('node-fetch');
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
@@ -13,9 +12,9 @@ const handle = app.getRequestHandler();
 cron.schedule('*/5 * * * *', async () => {
   console.log('Running status update job...');
   try {
-    const response = await fetch(`${API_URL}/api/updateStatus`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/updateStatus`, {
       method: "POST",
-    });    
+    });
     const result = await response.json();
     console.log('Update result:', result);
   } catch (error) {
@@ -50,6 +49,6 @@ app.prepare().then(() => {
 
   const PORT = process.env.PORT || 3000;
   httpServer.listen(PORT, () => {
-    console.log(`> Ready on ${API_URL}:${PORT}`);
+    console.log(`> Ready on ${process.env.NEXT_PUBLIC_API_URL}:${PORT}`);
   });
 });
