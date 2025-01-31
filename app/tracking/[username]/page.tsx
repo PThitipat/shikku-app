@@ -103,7 +103,7 @@ export default function UsersPage() {
         return () => {
         socket.disconnect();
         };
-    }, [fetchData]);
+    }, [username]);
 
     // Filter players if showing all
     const filteredPlayers = playersData.filter((player) => {
