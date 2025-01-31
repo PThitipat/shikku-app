@@ -59,15 +59,13 @@ export default function UsersPage() {
           const endpoint = username
             ? `${process.env.NEXT_PUBLIC_API_URL}/api/players_data?username=${username}`
             : `${process.env.NEXT_PUBLIC_API_URL}/api/players_data`;
-    
+      
           const response = await fetch(endpoint);
           const result = await response.json();
-    
+      
           if (result.success) {
             if (username) {
               setPlayer(result.data[0]); // Set single player
-            } else {
-              setPlayersData(result.data); // Set all players
             }
           } else {
             throw new Error(result.error || "Data fetch error");
@@ -76,9 +74,9 @@ export default function UsersPage() {
           console.error("Error fetching data:", err);
           setError("Failed to fetch data");
         }
-      }, [username]);
+      }, [username]);      
 
-    useEffect(() => {
+      useEffect(() => {
         fetchData();
       
         const socket = io(`${process.env.NEXT_PUBLIC_API_URL}`);
@@ -91,8 +89,6 @@ export default function UsersPage() {
           if (username) {
             const updatedPlayer = data.find((player) => player.username === username);
             if (updatedPlayer) setPlayer(updatedPlayer);
-          } else {
-            setPlayersData(data);
           }
         });
       
@@ -103,7 +99,7 @@ export default function UsersPage() {
         return () => {
           socket.disconnect();
         };
-      }, [username, fetchData]);
+      }, [username, fetchData]);      
       
 
     // Filter players if showing all
