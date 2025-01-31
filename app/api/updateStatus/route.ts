@@ -3,7 +3,7 @@ import { mysqlPool } from "@/utils/db";
 import { ResultSetHeader } from "mysql2";
 
 declare global {
-  var io: { emit: (event: string, data: unknown) => void } | undefined;
+  let io: { emit: (event: string, data: unknown) => void } | undefined;
 }
 
 export async function POST() {
