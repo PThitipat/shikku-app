@@ -44,7 +44,6 @@ export default function UsersPage() {
     const params = useParams();
     const username = params?.username || "";
     const [player, setPlayer] = useState<PlayerData | null>(null);
-    const [playersData, setPlayersData] = useState<PlayerData[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filterType, setFilterType] = useState<string>("All");
