@@ -57,6 +57,11 @@ export async function POST(req: NextRequest) {
 
     const [updatedRows] = await promisePool.query("SELECT * FROM players");
 
+    // ส่งข้อมูลที่อัปเดตไปยัง Client ผ่าน WebSocket
+    if (global.io) {
+      global.io.emit("updateData", updatedRows);
+    }
+    
     return NextResponse.json({ success: true, data: updatedRows });
   } catch (error) {
     console.error("Error saving player data:", error);
