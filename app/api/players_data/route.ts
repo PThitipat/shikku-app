@@ -8,7 +8,7 @@ export async function GET(req: Request) {
   try {
     const promisePool = mysqlPool.promise();
     let query = "SELECT * FROM players";
-    let values: string[] = [];
+    const values: string[] = [];
 
     if (username) {
       query += " WHERE username = ?";
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
         updated_at = NOW()
     `;
 
-    let values = [
+    const values = [
       body.license,
       body.username,
       body.level,

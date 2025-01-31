@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import io from "socket.io-client";
 import { useParams } from "next/navigation";
 import PlayerMonitor from "@/components/PlayerMonitor";
@@ -54,72 +54,73 @@ export default function UsersPage() {
     };
     
     // Fetch all players or a specific player
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
-        const endpoint = username
+          const endpoint = username
             ? `${process.env.NEXT_PUBLIC_API_URL}/api/players_data?username=${username}`
             : `${process.env.NEXT_PUBLIC_API_URL}/api/players_data`;
-
-        const response = await fetch(endpoint);
-        const result = await response.json();
-
-        if (result.success) {
+    
+          const response = await fetch(endpoint);
+          const result = await response.json();
+    
+          if (result.success) {
             if (username) {
-            setPlayer(result.data[0]); // Set single player
+              setPlayer(result.data[0]); // Set single player
             } else {
-            setPlayersData(result.data); // Set all players
+              setPlayersData(result.data); // Set all players
             }
-        } else {
+          } else {
             throw new Error(result.error || "Data fetch error");
-        }
+          }
         } catch (err) {
-        console.error("Error fetching data:", err);
-        setError("Failed to fetch data");
+          console.error("Error fetching data:", err);
+          setError("Failed to fetch data");
         }
-    };
+      }, [username]);
 
     useEffect(() => {
         fetchData();
-
+      
         const socket = io(`${process.env.NEXT_PUBLIC_API_URL}`);
-
+      
         socket.on("connect", () => {
-        console.log("Connected to WebSocket:", socket.id);
+          console.log("Connected to WebSocket:", socket.id);
         });
-
+      
         socket.on("updateData", (data: PlayerData[]) => {
-        if (username) {
+          if (username) {
             const updatedPlayer = data.find((player) => player.username === username);
             if (updatedPlayer) setPlayer(updatedPlayer);
-        } else {
+          } else {
             setPlayersData(data);
-        }
+          }
         });
-
+      
         socket.on("disconnect", () => {
-        console.log("Disconnected from WebSocket");
+          console.log("Disconnected from WebSocket");
         });
-
+      
         return () => {
-        socket.disconnect();
+          socket.disconnect();
         };
-    }, [username]);
+      }, [username, fetchData]);
+      
 
     // Filter players if showing all
-    const filteredPlayers = playersData.filter((player) => {
-        const matchesSearch = player.username
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
+    // const filteredPlayers = playersData.filter((player) => {
+    //     const matchesSearch = player.username
+    //     .toLowerCase()
+    //     .includes(searchQuery.toLowerCase());
 
-        switch (filterType) {
-        case "Offline":
-            return matchesSearch && player.status === "Offline";
-        case "Online":
-            return matchesSearch && player.status === "Online";
-        default:
-            return matchesSearch;
-        }
-    });
+    //     switch (filterType) {
+    //     case "Offline":
+    //         return matchesSearch && player.status === "Offline";
+    //     case "Online":
+    //         return matchesSearch && player.status === "Online";
+    //     default:
+    //         return matchesSearch;
+    //     }
+    // });
 
     // Render single player
         return (

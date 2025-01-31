@@ -1,8 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
+import React from "react";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
 interface BannerData {
@@ -31,44 +29,7 @@ const formatTime = (timestamp: string): string => {
   return date.toLocaleString();
 };
 
-const deletePlayer = async (id: string, closeDialog: () => void): Promise<void> => {
-  try {
-    const response = await axios.delete(`/api/players/${id}`);
-    if (response.status === 200) {
-      closeDialog();
-      toast.success("Player deleted successfully", {
-        position: "bottom-right",
-        autoClose: 3000,
-      });
-    } else {
-      toast.error(response.data?.message || "Failed to delete player", {
-        position: "bottom-right",
-        autoClose: 3000,
-      });
-    }
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      // Handle Axios-specific errors
-      const errorMessage = error.response?.data?.message || "Failed to communicate with the server";
-      toast.error(errorMessage, {
-        position: "bottom-right",
-        autoClose: 3000,
-      });
-    } else {
-      // Handle generic errors
-      toast.error("An unexpected error occurred", {
-        position: "bottom-right",
-        autoClose: 3000,
-      });
-      console.error("Unexpected error:", error);
-    }
-  }
-};
-
-
 const PlayerMonitor: React.FC<PlayerMonitorProps> = ({
-  id,
-  license,
   username,
   status,
   world,
@@ -78,13 +39,13 @@ const PlayerMonitor: React.FC<PlayerMonitorProps> = ({
   holidaystars,
   updated_at,
 }) => {
-  const [open, setOpen] = useState(false);
-  const [confirmDialog, setConfirmDialog] = useState(false);
+  // const [open, setOpen] = useState(false);
+  // const [confirmDialog, setConfirmDialog] = useState(false);
 
-  const current = 100000; // ค่าปัจจุบัน
-  const max = 100000;  // ค่าเป้าหมาย
+  // const current = 100000; // ค่าปัจจุบัน
+  // const max = 100000;  // ค่าเป้าหมาย
 
-  const isComplete = current >= max; // ตรวจสอบว่าค่าปัจจุบันถึงเป้าหมายหรือไม่
+  // const isComplete = current >= max; // ตรวจสอบว่าค่าปัจจุบันถึงเป้าหมายหรือไม่
   
   return (
     <div className="bg-gray-800/50 rounded-lg p-2 border-2 border-gray-800 cursor-pointer hover:border-gray-600 transition">
