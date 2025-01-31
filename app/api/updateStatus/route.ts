@@ -3,7 +3,7 @@ import { mysqlPool } from "@/utils/db";
 import { ResultSetHeader } from "mysql2";
 
 declare global {
-  var io: any; // Declare the global.io type
+  let io: unknown; // Declare the global.io type with a more specific unknown type
 }
 
 export async function POST() {
