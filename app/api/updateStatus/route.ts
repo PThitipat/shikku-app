@@ -3,7 +3,12 @@ import { mysqlPool } from "@/utils/db";
 import { ResultSetHeader } from "mysql2";
 
 declare global {
-  let io: unknown; // Declare the global.io type with a more specific unknown type
+  // Properly type globalThis with io as an optional Server type
+  namespace NodeJS {
+    interface Global {
+      io?: { emit: (event: string, data: unknown) => void };
+    }
+  }
 }
 
 export async function POST() {
