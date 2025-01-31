@@ -43,6 +43,7 @@ export async function POST(req: NextRequest) {
     `;
 
     const values = [
+      body.id,
       body.license,
       body.username,
       body.level,
