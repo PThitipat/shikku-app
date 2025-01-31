@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 
     const query = `
       INSERT INTO players (license, username, level, gems, golds, holidaystars, world, status, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+      VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, NOW())
       ON DUPLICATE KEY UPDATE
         level = VALUES(level),
         gems = VALUES(gems),
@@ -43,15 +43,14 @@ export async function POST(req: NextRequest) {
     `;
 
     const values = [
-      body.id,
-      body.license,
-      body.username,
-      body.level,
-      body.gems,
-      body.golds,
-      body.holidaystars,
-      body.world,
-      body.status,
+      body.license,       // license
+      body.username,      // username
+      body.level,         // level
+      body.gems,          // gems
+      body.golds,         // golds
+      body.holidaystars,  // holidaystars
+      body.world,         // world
+      body.status         // status
     ];
 
     await promisePool.query(query, values);
