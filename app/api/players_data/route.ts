@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
         updated_at = NOW()
     `;
 
-    const values = [
+    let values = [
       body.license,
       body.username,
       body.level,

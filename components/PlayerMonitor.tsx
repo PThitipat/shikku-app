@@ -1,23 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Popover, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { FaTrash } from "react-icons/fa";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
-
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-
 interface BannerData {
   Featured_One: string;
   Featured_Two: string;

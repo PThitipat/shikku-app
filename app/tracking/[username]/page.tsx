@@ -41,10 +41,6 @@ interface PlayerData {
 }
 
 export default function UsersPage() {
-    if (!process.env.NEXT_PUBLIC_API_URL) {
-        return null;
-    };
-
     const params = useParams();
     const username = params?.username || "";
     const [player, setPlayer] = useState<PlayerData | null>(null);
@@ -52,7 +48,11 @@ export default function UsersPage() {
     const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filterType, setFilterType] = useState<string>("All");
-
+    
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return null;
+    };
+    
     // Fetch all players or a specific player
     const fetchData = async () => {
         try {
@@ -103,7 +103,7 @@ export default function UsersPage() {
         return () => {
         socket.disconnect();
         };
-    }, [username]);
+    }, [fetchData]);
 
     // Filter players if showing all
     const filteredPlayers = playersData.filter((player) => {
