@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { mysqlPool } from "@/utils/db";
 
-interface GlobalIO {
-  emit: (event: string, data: unknown) => void;
-}
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
@@ -61,10 +58,8 @@ export async function POST(req: NextRequest) {
 
     const [updatedRows] = await promisePool.query("SELECT * FROM players");
 
-    const io = (global as typeof global & { io?: GlobalIO }).io;
-
-    if (io) {
-      io.emit("updateData", updatedRows);
+    if (global.io) {
+      global.io.emit("updateData", updatedRows);
     }
 
     return NextResponse.json({ success: true, data: updatedRows });
