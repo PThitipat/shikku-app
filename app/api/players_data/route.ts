@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { mysqlPool } from "@/utils/db";
 
+interface GlobalIO {
+  emit: (event: string, data: unknown) => void;
+}
+
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const username = url.searchParams.get("username");
@@ -57,11 +61,15 @@ export async function POST(req: NextRequest) {
 
     const [updatedRows] = await promisePool.query("SELECT * FROM players");
 
-    // ส่งข้อมูลที่อัปเดตไปยัง Client ผ่าน WebSocket
-    if (global.io) {
-      global.io.emit("updateData", updatedRows);
+    const io = (global as typeof global & { io?: GlobalIO }).io;
+
+    if (io) {
+      io.emit("updateData", updatedRows);
+      console.log("Data emitted via WebSocket");
+    } else {
+      console.warn("WebSocket server (global.io) is not initialized.");
     }
-    
+
     return NextResponse.json({ success: true, data: updatedRows });
   } catch (error) {
     console.error("Error saving player data:", error);
