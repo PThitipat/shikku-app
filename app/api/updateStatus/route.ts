@@ -2,40 +2,41 @@ import { NextResponse } from "next/server";
 import { mysqlPool } from "@/utils/db";
 import { ResultSetHeader } from "mysql2";
 
-declare global {
-  var io: { emit: (event: string, data: unknown) => void } | undefined;
+interface GlobalIO {
+  emit: (event: string, data: unknown) => void;
 }
 
 export async function POST() {
-    try {
-        const query = `
-        UPDATE players
-        SET status = 'Offline'
-        WHERE updated_at < NOW() - INTERVAL 5 MINUTE AND status = 'Online'
-        `;
+  try {
+    const query = `
+      UPDATE players
+      SET status = 'Offline'
+      WHERE updated_at < NOW() - INTERVAL 5 MINUTE AND status = 'Online'
+    `;
 
-        console.log("Executing query:", query);
+    console.log("Executing query:", query);
 
-        const [result] = await (mysqlPool.promise().query(query) as Promise<[ResultSetHeader]>);
+    const [result] = await (mysqlPool.promise().query(query) as Promise<[ResultSetHeader]>);
 
-        console.log("Affected Rows:", result.affectedRows);
+    console.log("Affected Rows:", result.affectedRows);
 
-        const [updatedPlayers] = await mysqlPool.promise().query("SELECT * FROM players");
+    const [updatedPlayers] = await mysqlPool.promise().query("SELECT * FROM players");
 
-        console.log("Updated Players Data:", updatedPlayers);
+    console.log("Updated Players Data:", updatedPlayers);
 
-        // ตรวจสอบ global.io
-        if (typeof global.io !== "undefined") {
-        global.io.emit("updateData", updatedPlayers);
-        console.log("Data emitted via WebSocket");
-        } else {
-        console.warn("WebSocket server (global.io) is not initialized.");
-        }
+    const io = (global as typeof global & { io?: GlobalIO }).io;
 
-        return NextResponse.json({ success: true, updated: result.affectedRows, data: updatedPlayers });
-    } catch (error) {
-        console.error("Error updating status:", error);
-        const errorMessage = error instanceof Error ? error.message : "Unknown Error";
-        return NextResponse.json({ success: false, error: errorMessage }, { status: 500 });
+    if (io) {
+      io.emit("updateData", updatedPlayers);
+      console.log("Data emitted via WebSocket");
+    } else {
+      console.warn("WebSocket server (global.io) is not initialized.");
     }
+
+    return NextResponse.json({ success: true, updated: result.affectedRows, data: updatedPlayers });
+  } catch (error) {
+    console.error("Error updating status:", error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown Error";
+    return NextResponse.json({ success: false, error: errorMessage }, { status: 500 });
+  }
 }
