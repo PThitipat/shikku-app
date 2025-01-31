@@ -67,7 +67,7 @@ export default function UsersPage() {
 
   useEffect(() => {
     if (!process.env.NEXT_PUBLIC_API_URL) {
-      console.error("API URL is missing");
+      console.error("API URL is missing xxxxxxx");
       return;
     }
 
