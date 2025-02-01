@@ -2,10 +2,6 @@ import { NextResponse } from "next/server";
 import { mysqlPool } from "@/utils/db";
 import { ResultSetHeader } from "mysql2";
 
-interface GlobalIO {
-  emit: (event: string, data: unknown) => void;
-}
-
 export async function POST() {
   try {
     const query = `
@@ -21,17 +17,6 @@ export async function POST() {
     console.log("Affected Rows:", result.affectedRows);
 
     const [updatedPlayers] = await mysqlPool.promise().query("SELECT * FROM players");
-
-    console.log("Updated Players Data:", updatedPlayers);
-
-    const io = (global as typeof global & { io?: GlobalIO }).io;
-
-    if (io) {
-      io.emit("updateData", updatedPlayers);
-      console.log("Data emitted via WebSocket");
-    } else {
-      console.warn("WebSocket server (global.io) is not initialized.");
-    }
 
     return NextResponse.json({ success: true, updated: result.affectedRows, data: updatedPlayers });
   } catch (error) {
